@@ -1,0 +1,94 @@
+#include <iostream>
+#include <iomanip>
+#include <string>
+#include <algorithm>
+using namespace std;
+
+const int NUM_MONTHS = 12;
+
+// Function to display the menu and get user's choice
+int getMenuChoice() {
+    int choice;
+    cout << "\nMenu:\n";
+    cout << "1. Add data\n";
+    cout << "2. Print data\n";
+    cout << "3. Exit\n";
+    cout << "Enter your choice (1-3): ";
+    cin >> choice;
+    // Validate the input
+    while (choice < 1 || choice > 3) {
+        cout << "Invalid choice. Enter your choice (1-3): ";
+        cin >> choice;
+    }
+    return choice;
+}
+
+// Function to add data to the arrays
+void addData(string months[], double sales[]) {
+    string month;
+    double amount;
+    cout << "Enter the month name and total sales (e.g. January 76321.56): ";
+    cin >> month >> amount;
+    // Validate the input
+    while (cin.fail()) {
+        cout << "Invalid input. Enter the month name and total sales (e.g. January 76321.56): ";
+        cin.clear();
+        cin.ignore(10000, '\n');
+        cin >> month >> amount;
+    }
+    // Find the index of the month in the array
+    int index = find(months, months+NUM_MONTHS, month) - months;
+    // If the month is not found, show an error message
+    if (index == NUM_MONTHS) {
+        cout << "Invalid month name.\n";
+    }
+    else {
+        sales[index] += amount;
+        cout << "Data added.\n";
+    }
+}
+
+// Function to print the data in a table format
+void printData(string months[], double sales[]) {
+    cout << "Month\t\tAmount\n";
+    for (int i = 0; i < NUM_MONTHS; i++) {
+        cout << setw(10) << left << months[i] << "\t$" << fixed << setprecision(2) << right << sales[i] << endl;
+    }
+}
+
+// Function to calculate the mean of the sales
+double calculateMean(double sales[]) {
+    double sum = 0;
+    for (int i = 0; i < NUM_MONTHS; i++) {
+        sum += sales[i];
+    }
+    return sum / NUM_MONTHS;
+}
+
+// Function to calculate the median of the sales
+double calculateMedian(double sales[]) {
+    // Sort the array using bubble sort algorithm
+    for (int i = 0; i < NUM_MONTHS - 1; i++) {
+        for (int j = 0; j < NUM_MONTHS - i - 1; j++) {
+            if (sales[j] > sales[j+1]) {
+                double temp = sales[j];
+                sales[j] = sales[j+1];
+                sales[j+1] = temp;
+            }
+        }
+    }
+    // Find the median
+    if (NUM_MONTHS % 2 == 0) {
+        return (sales[NUM_MONTHS/2 - 1] + sales[NUM_MONTHS/2]) / 2;
+    }
+    else {
+        return sales[NUM_MONTHS/2];
+    }
+}
+
+// Function to print the data with results in a table format
+void printDataWithResults(string months[], double sales[]) {
+    double mean = calculateMean(sales);
+    double median = calculateMedian(sales);
+    cout << "Month\t\tTotal Sales\t\tResults\n";
+    for (int i =
